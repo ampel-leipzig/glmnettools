@@ -30,7 +30,4 @@ test_that("rcv.glmnet", {
 #' # use `vdiffr::manage_cases()` to add new/verify changed plots
 #' vdiffr::manage_cases()
     vdiffr::expect_doppelganger("rcv.glmnet-plot", function()plot(rcv))
-
-    local_edition(3)
-    expect_snapshot(rcv)
 })
