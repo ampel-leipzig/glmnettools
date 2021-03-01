@@ -1,0 +1,55 @@
+---
+title: Additional Tools for glmnet
+output:
+    rmarkdown::html_vignette:
+        toc_float: true
+vignette: >
+    %\VignetteIndexEntry{Additional Tools for glmnet}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+bibliography: bibliography.bib
+---
+
+# Introduction
+
+The `glmnettools` package offers functions for repeated cross-validation and
+prediction of survival probabilities using the `glmnet` package
+[@friedmann2010; @simon2011].
+
+# Repeated Cross-Validation
+
+The example is taken from the `cv.glmnet` manual page (`?"glmnet::cv.glmnet"`):
+
+```{r exampledata}
+library("glmnettools")
+
+# Generating example data
+set.seed(1010)
+n <- 1000
+p <- 100
+nzc <- trunc(p/10)
+x <- matrix(rnorm(n * p), n, p)
+beta <- rnorm(nzc)
+fx <- x[, seq(nzc)] %*% beta
+eps <- rnorm(n) * 5
+y <- drop(fx + eps)
+```
+
+```{r rcvglmnet}
+set.seed(1011)
+# nrepcv should usually be higher but to keep the runtime of the example low
+# we choose 2 here
+rcvob <- rcv.glmnet(x, y, nrepcv = 2)
+plot(rcvob)
+title("Gaussian Family", line = 2.5)
+coef(rcvob)
+predict(rcvob, newx = x[1:5, ], s = "lambda.min")
+```
+
+# Session information
+
+```{r si}
+sessionInfo()
+```
+
+# References
