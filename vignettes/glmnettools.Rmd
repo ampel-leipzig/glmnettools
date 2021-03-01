@@ -14,7 +14,7 @@ bibliography: bibliography.bib
 
 The `glmnettools` package offers functions for repeated cross-validation and
 prediction of survival probabilities using the `glmnet` package
-[@friedmann2010; @simon2011].
+[@friedman2010; @simon2011].
 
 # Repeated Cross-Validation
 
