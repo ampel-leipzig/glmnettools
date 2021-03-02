@@ -54,7 +54,7 @@ y <- drop(fx + eps)
 set.seed(1011)
 # nrepcv should usually be higher but to keep the runtime of the example low
 # we choose 2 here
-rcvob <- rcv.glmnet(x, y, nrepcv = 2)
+rcvob <- rcv.glmnet(x, y, nrepcv = 2, nfolds = 3)
 plot(rcvob)
 title("Gaussian Family", line = 2.5)
 coef(rcvob)

@@ -10,17 +10,22 @@ test_that("rcv.glmnet", {
     eps <- rnorm(n) * 5
     y <- drop(fx + eps)
     set.seed(1011)
-    cv <- list(cv1 = cv.glmnet(x, y), cv2 = cv.glmnet(x, y))
+    cv <- list(
+        cv1 = cv.glmnet(x, y, nfolds = 3),
+        cv2 = cv.glmnet(x, y, nfolds = 3)
+    )
     set.seed(1011)
-    rcv <- rcv.glmnet(x, y, nrepcv = 2L, mc.cores = 1L, trace.it = FALSE)
+    rcv <- rcv.glmnet(
+        x, y, nrepcv = 2, nfolds = 3, mc.cores = 1, trace.it = FALSE
+    )
     expect_equal(
         rcv$cvm,
-        colMeans(do.call(rbind, list(cv[[1L]]$cvm, cv[[2L]]$cvm)))
+        colMeans(do.call(rbind, list(cv[[1]]$cvm, cv[[2]]$cvm)))
     )
     expect_equal(
         rcv$index,
         matrix(
-            c(25, 17), nrow = 2L,
+            c(25, 17), nrow = 2,
             dimnames = list(c("min", "1se"), c("Lambda"))
         )
     )
