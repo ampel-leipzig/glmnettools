@@ -202,10 +202,7 @@ predict.rcv.glmnet <- function(object, newx, s = c("lambda.1se", "lambda.min"),
                 "'rcv.glmnet(..., family = \"cox\")."
             )
         requireNamespace("survival")
-        if (is.character(s)) {
-            s <- match.arg(s)
-            s <- object[[s]]
-        }
+        s <- .s2numeric(object, s)
         if (length(s) != 1L)
             stop("'s' has to be an 'numeric' or 'character' of length 1.")
         args <- list(...)

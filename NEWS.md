@@ -1,5 +1,9 @@
 # glmnettools 0.0
 
+## Changes in 0.0.3
+
+- Add `as.coxph` and `as.cph`.
+
 ## Changes in 0.0.2
 
 - Add `predict.rcv.glmnet`.

@@ -42,40 +42,57 @@ set.seed(1011)
 rcvob <- rcv.glmnet(x, y, nrepcv = 2, nfolds = 3)
 plot(rcvob)
 title("Gaussian Family", line = 2.5)
-coef(rcvob)
+head(coef(rcvob))
 predict(rcvob, newx = x[1:5, ], s = "lambda.min")
 ```
 
 # Prediction Survival Probabilities
 
-The example is taken from the `cv.glmnet` manual page (`?"glmnet::cv.glmnet"`):
+The example data are taken from the `survival` package [@survival].
 
 ```{r survexampledata}
 library("survival")
 
-set.seed(10101)
-n <- 500
-p <- 30
-nzc <- trunc(p / 10)
-x <- matrix(rnorm(n * p), n, p)
-beta <- rnorm(nzc)
-fx <- x[, seq(nzc)] %*% beta / 3
-hx <- exp(fx)
-ty <- rexp(n, hx)
-tcens <- rbinom(n = n, prob = 0.3, size = 1)  # censoring indicator
-y <- Surv(ty, 1 - tcens)
+data("pbc")
+pbc <- pbc[complete.cases(pbc),]
+x <- data.matrix(pbc[!colnames(pbc) %in% c("id", "time", "status")])
+y <- Surv(pbc$time, as.integer(pbc$status == 2))
 
 rcvob <- rcv.glmnet(x, y, family = "cox", nrepcv = 2, nfolds = 3)
+
+plot(rcvob)
+plot(rcvob$glmnet.fit, label = TRUE)
+
+nz <- predict(rcvob, type = "nonzero", s = "lambda.1se")[, 1]
+nz
+colnames(x)[nz]
 
 ## predicting survival probabilities
 predict(
     rcvob,
-    newx = x[1:5,], x = x, y = y,
-    type = "survival", times = c(0, 7), s = "lambda.1se"
+    newx = x[1:5,], x = x, y = y, s = "lambda.1se",
+    type = "survival", times = c(2, 5) * 365.25
 )
 
 ## linear predictor
 predict(rcvob, newx = x[1:5,], type = "link", s = "lambda.1se")
+```
+
+# Convert `rcv.glmnet`/`coxnet` Objects into `coxph` or `cph` Objects
+
+For further investigation/processing packages like `survival` and/or `rms`
+offer a lot of useful functions [@survival; @rms]. That's why `glmnettools`
+provides some helper functions to convert between these objects.
+
+```{r cph}
+library("rms")
+cx <- as.cph(rcvob, x = x, y = y, s = "lambda.1se")
+
+set.seed(123)
+## B should be much higher in real life
+cb <- calibrate(cx, B = 10, u = 2 * 365.25)
+cb
+plot(cb)
 ```
 
 # Session information
