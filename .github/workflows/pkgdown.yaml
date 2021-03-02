@@ -46,7 +46,7 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          done < <(Rscript -e 'c(remotes::system_requirements("ubuntu", "20.04"), paste("apt-get install -y", c("libharfbuzz-dev", "libfribidi-dev")))')
 
       - name: Install dependencies
         run: |
