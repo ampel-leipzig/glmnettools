@@ -36,3 +36,66 @@ test_that("rcv.glmnet", {
 #' vdiffr::manage_cases()
     vdiffr::expect_doppelganger("rcv.glmnet-plot", function()plot(rcv))
 })
+
+test_that("predict.rcv.glmnet", {
+    # taken from glmnet::cv.glmnet
+    set.seed(10101)
+    n <- 500
+    p <- 30
+    nzc <- trunc(p / 10)
+    x <- matrix(rnorm(n * p), n, p)
+    beta <- rnorm(nzc)
+    fx <- x[, seq(nzc)] %*% beta / 3
+    hx <- exp(fx)
+    ty <- rexp(n, hx)
+    tcens <- rbinom(n = n, prob = 0.3, size = 1)  # censoring indicator
+    y <- cbind(time = ty, status = 1 - tcens)
+
+    expect_error(
+            predict(
+                rcv.glmnet(x, y[, "status"], nrepcv = 1, nfolds = 3),
+                type = "survival"
+            ),
+            "family = .*cox.*"
+    )
+
+    rcvobj <- rcv.glmnet(x, y, family = "cox", nrepcv = 1, nfolds = 3)
+    expect_error(
+        predict(rcvobj, type = "survival", s = c(0.1, 0.2)), "length 1"
+    )
+
+    expect_equal(
+        predict(rcvobj, newx = x[1:5,], type = "link", s = "lambda.1se"),
+        predict(
+            rcvobj$glmnet.fit, newx = x[1:5,],
+            type = "link", s = rcvobj[["lambda.1se"]]
+        )
+    )
+
+    skip_if_not_installed("survival")
+    requireNamespace("survival")
+
+    expect_equal(
+        predict(
+            rcvobj,
+            x = x, y = survival::Surv(y[, "time"], y[, "status"]),
+            newx = x[1:5,],
+            type = "survival", s = "lambda.1se", times = c(0, 7)
+        ),
+        matrix(
+            c(rep(1, 5), 0.1312533, 0.05047742, 0.002480262, 0.01006882,
+              0.02348179),
+            byrow = TRUE, nrow = 2, ncol = 5,
+            dimnames = list(NULL, c(as.character(1:5)))
+        )
+    )
+
+    expect_equal(
+        dim(predict(
+            rcvobj,
+            x = x, y = survival::Surv(y[, "time"], y[, "status"]),
+            newx = x[1:5,],
+            type = "survival", s = "lambda.1se"
+        )), c(343, 5)
+    )
+})

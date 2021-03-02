@@ -139,3 +139,86 @@ plot.rcv.glmnet <- function(x, ...) {
         adj = 0L
     )
 }
+
+#' Predictions for a `rcv.glmnet` object
+#'
+#' Compute fitted values for a model fitted by `rcv.glmnet`.
+#'
+#' @param object `rcv.glmnet` object.
+#' @param newx `matrix`, of new values for `x` at which predictions are to be
+#' made.
+#' @param s `character`/`numeric`, value(s) of the penality parameter `lambda`.
+#' See [`glmnet::predict.cv.glmnet()`] for details.
+#' @param type `character`, type of prediction. For `"survival"`
+#' the predicted survival is returned for each timepoint in `times`. All other
+#' types are passed to `predict.cv.glmnet`
+#' See [`glmnet::predict.cv.glmnet()`] for details.
+#' @param times `numeric`, vector of times, the returned matrix will contain one
+#' row for each time. See [`survival::summary.survfit()`] for details.
+#' @param \dots further arguments passed to `predict.cv.glmnet`.
+#'
+#' @return The object returned depends on the \dots arguments.
+#' See [`glmnet::predict.cv.glmnet()`] for details. For `type = "survival"` the
+#' returned value is a `matrix` with one row per `times` element and one column
+#' for each row in `newx`.
+#' @author Sebastian Gibb
+#' @seealso [`rcv.glmnet()`], [`glmnet::predict.cv.glmnet()`],
+#' [`survival::summary.survfit()`]
+#' @importFrom methods is
+#' @method predict rcv.glmnet
+#' @export
+#' @examples
+#' # Example adapted from ?"glmnet::cv.glmnet"
+#' set.seed(10101)
+#' n <- 500
+#' p <- 30
+#' nzc <- trunc(p / 10)
+#' x <- matrix(rnorm(n * p), n, p)
+#' beta <- rnorm(nzc)
+#' fx <- x[, seq(nzc)] %*% beta / 3
+#' hx <- exp(fx)
+#' ty <- rexp(n, hx)
+#' tcens <- rbinom(n = n, prob = 0.3, size = 1)  # censoring indicator
+#' # y <- Surv(ty, 1-tcens) with library("survival")
+#' y <- cbind(time = ty, status = 1 - tcens)
+#' # nrepcv should usually be higher but to keep the runtime of the example low
+#' # we choose 2 here
+#' rcvob <- rcv.glmnet(x, y, family = "cox", nrepcv = 2, nfolds = 3)
+#' predict(
+#'     rcvob,
+#'     newx = x[1:5,], x = x, y = survival::Surv(y[, "time"], y[, "status"]),
+#'     type = "survival", times = c(0, 7), s = "lambda.1se"
+#' )
+predict.rcv.glmnet <- function(object, newx, s = c("lambda.1se", "lambda.min"),
+                               type = c("link", "response", "coefficients",
+                                        "nonzero", "class", "survival"),
+                               times, ...) {
+    type <- match.arg(type)
+
+    if (type == "survival") {
+        if (!is(object$glmnet.fit, "coxnet"))
+            stop(
+                "Survival prediction is just supported for ",
+                "'rcv.glmnet(..., family = \"cox\")."
+            )
+        requireNamespace("survival")
+        if (is.character(s)) {
+            s <- match.arg(s)
+            s <- object[[s]]
+        }
+        if (length(s) != 1L)
+            stop("'s' has to be an 'numeric' or 'character' of length 1.")
+        args <- list(...)
+        srvft <- survival::survfit(object, newx = newx, s = s, ...)
+        summaryargs <-
+            args[names(args) %in% c("censored", "scale", "extend", "rmean")]
+
+        if (!missing(times))
+            summaryargs <- append(summaryargs, list(times = times))
+        do.call(
+            summary,
+            append(list(object = srvft), summaryargs)
+        )$surv
+    } else
+        NextMethod()
+}

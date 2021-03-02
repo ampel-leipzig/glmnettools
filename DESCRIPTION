@@ -1,6 +1,6 @@
 Package: glmnettools
 Title: Additional Tools for glmnet
-Version: 0.0.1
+Version: 0.0.2
 Description: Provides additional tools for the 'glmnet' package like repeated
     cross-validation and predicting survival propabilities for coxnet objects.
 Authors@R: person(given = "Sebastian", family = "Gibb",
@@ -10,9 +10,11 @@ Authors@R: person(given = "Sebastian", family = "Gibb",
 Maintainer: Sebastian Gibb <mail@sebastiangibb.de>
 Depends:
     R (>= 4.0.0),
+    methods,
     glmnet (>= 4.1-1)
 Suggests:
     pbapply,
+    survival,
     knitr,
     rmarkdown,
     testthat,

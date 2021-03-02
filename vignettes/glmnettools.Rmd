@@ -38,16 +38,47 @@ y <- drop(fx + eps)
 ```{r rcvglmnet}
 set.seed(1011)
 # nrepcv should usually be higher but to keep the runtime of the example low
-# we choose 2 here
-rcvob <- rcv.glmnet(x, y, nrepcv = 2)
+# we choose 2 here, same for the nfolds
+rcvob <- rcv.glmnet(x, y, nrepcv = 2, nfolds = 3)
 plot(rcvob)
 title("Gaussian Family", line = 2.5)
 coef(rcvob)
 predict(rcvob, newx = x[1:5, ], s = "lambda.min")
 ```
 
-# Session information
+# Prediction Survival Probabilities
 
+The example is taken from the `cv.glmnet` manual page (`?"glmnet::cv.glmnet"`):
+
+```{r survexampledata}
+library("survival")
+
+set.seed(10101)
+n <- 500
+p <- 30
+nzc <- trunc(p / 10)
+x <- matrix(rnorm(n * p), n, p)
+beta <- rnorm(nzc)
+fx <- x[, seq(nzc)] %*% beta / 3
+hx <- exp(fx)
+ty <- rexp(n, hx)
+tcens <- rbinom(n = n, prob = 0.3, size = 1)  # censoring indicator
+y <- Surv(ty, 1 - tcens)
+
+rcvob <- rcv.glmnet(x, y, family = "cox", nrepcv = 2, nfolds = 3)
+
+## predicting survival probabilities
+predict(
+    rcvob,
+    newx = x[1:5,], x = x, y = y,
+    type = "survival", times = c(0, 7), s = "lambda.1se"
+)
+
+## linear predictor
+predict(rcvob, newx = x[1:5,], type = "link", s = "lambda.1se")
+```
+
+# Session information
 ```{r si}
 sessionInfo()
 ```
