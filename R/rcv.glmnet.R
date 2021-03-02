@@ -116,7 +116,16 @@ rcv.glmnet <- function(x, y, lambda = NULL, nrepcv = 100L, nfolds = 10L, ...,
     out
 }
 
-#' @noRd
+#' Plot the cross-validation curve
+#'
+#' This functions plots the aggregated cross-validation curve produced by
+#' [`rcv.glmnet()`].
+#'
+#' @param x `rcv.glmnet` object.
+#' @param \dots further arguments passed to `cv.glmnet`.
+#'
+#' @author Sebastian Gibb
+#' @seealso [`glmnet::cv.glmnet()`]
 #' @importFrom graphics title
 #' @method plot rcv.glmnet
 #' @export
