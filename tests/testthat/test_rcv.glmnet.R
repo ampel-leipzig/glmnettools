@@ -53,13 +53,19 @@ test_that("predict.rcv.glmnet", {
 
     expect_error(
             predict(
-                rcv.glmnet(x, y[, "status"], nrepcv = 1, nfolds = 3),
+                rcv.glmnet(
+                    x, y[, "status"], nrepcv = 1, nfolds = 3,
+                    mc.cores = 1, trace.it = FALSE
+                ),
                 type = "survival"
             ),
             "family = .*cox.*"
     )
 
-    rcvobj <- rcv.glmnet(x, y, family = "cox", nrepcv = 1, nfolds = 3)
+    rcvobj <- rcv.glmnet(
+        x, y, family = "cox", nrepcv = 1, nfolds = 3,
+        mc.cores = 1, trace.it = FALSE
+    )
     expect_error(
         predict(rcvobj, type = "survival", s = c(0.1, 0.2)), "length 1"
     )
