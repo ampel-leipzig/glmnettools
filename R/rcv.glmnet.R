@@ -124,7 +124,7 @@ plot.rcv.glmnet <- function(x, ...) {
     NextMethod()
     title(
         sub = paste(
-            "Averaged across", x$nrepcv, "repeated cross validations",
+            "Averaged across", x$nrepcv, "repeated cross-validations",
             "each with", x$nfolds, "folds."
         ),
         adj = 0L
