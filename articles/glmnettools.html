@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glmnettools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -196,21 +196,22 @@
 ## 
 ##     backsolve</code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as.coxph.html">as.cph</a></span><span class="op">(</span><span class="va">rcvob</span>, x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">tm</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">365.2</span>
+<span class="va">cx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as.coxph.html">as.cph</a></span><span class="op">(</span><span class="va">rcvob</span>, x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, s <span class="op">=</span> <span class="st">"lambda.1se"</span>, time.inc <span class="op">=</span> <span class="va">tm</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
 <span class="co">## B should be much higher in real life</span>
-<span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rms/man/calibrate.html">calibrate</a></span><span class="op">(</span><span class="va">cx</span>, B <span class="op">=</span> <span class="fl">10</span>, u <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">365.25</span><span class="op">)</span></code></pre></div>
-<pre><code>## Using Cox survival estimates at  500 Days</code></pre>
+<span class="va">cb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rms/man/calibrate.html">calibrate</a></span><span class="op">(</span><span class="va">cx</span>, B <span class="op">=</span> <span class="fl">10</span>, u <span class="op">=</span> <span class="va">tm</span><span class="op">)</span></code></pre></div>
+<pre><code>## Using Cox survival estimates at  730.4 Days</code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cb</span></code></pre></div>
-<pre><code>## calibrate.cph(fit = cx, u = 2 * 365.25, B = 10)
+<pre><code>## calibrate.cph(fit = cx, u = tm, B = 10)
 ## 
 ## 
-## n=276  B=10  u=730.5 Day
+## n=276  B=10  u=730.4 Day
 ## 
 ## 
-## Mean |error|:0.06963131  0.9 Quantile of |error|:0.1783728</code></pre>
+## Mean |error|:0.06093228  0.9 Quantile of |error|:0.1334867</code></pre>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cb</span><span class="op">)</span></code></pre></div>
 <p><img src="glmnettools_files/figure-html/cph-1.png" width="700"></p>
@@ -239,7 +240,7 @@
 ## 
 ## other attached packages:
 ##  [1] rms_6.1-1         SparseM_1.81      Hmisc_4.5-0       ggplot2_3.3.3    
-##  [5] Formula_1.2-4     lattice_0.20-41   survival_3.2-7    glmnettools_0.0.3
+##  [5] Formula_1.2-4     lattice_0.20-41   survival_3.2-7    glmnettools_0.0.4
 ##  [9] glmnet_4.1-1      Matrix_1.3-2     
 ## 
 ## loaded via a namespace (and not attached):

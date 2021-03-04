@@ -73,7 +73,7 @@ survival::coxph or rms::cph." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">glmnettools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -134,7 +134,7 @@ survival::coxph or rms::cph." />
 <span class='fu'>as.cph</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>s</span>, <span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for coxnet</span>
-<span class='fu'>as.cph</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>s</span>, <span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>as.cph</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>s</span>, <span class='va'>x</span>, <span class='va'>y</span>, time.inc <span class='op'>=</span> <span class='fl'>30</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,6 +159,10 @@ survival::coxph or rms::cph." />
     <tr>
       <th>y</th>
       <td><p>response as in <code>glmnet</code>.</p></td>
+    </tr>
+    <tr>
+      <th>time.inc</th>
+      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>, time increment, see <code><a href='https://rdrr.io/pkg/rms/man/cph.html'>rms::cph()</a></code> for details.</p></td>
     </tr>
     </table>
 
