@@ -51,9 +51,10 @@ as.cph.rcv.glmnet <- function(object, s, x, y, ...) {
 
 #' @rdname as
 #' @importFrom stats as.formula predict
+#' @param time.inc `numeric(1)`, time increment, see [`rms::cph()`] for details.
 #' @method as.cph coxnet
 #' @export
-as.cph.coxnet <- function(object, s, x, y, ...) {
+as.cph.coxnet <- function(object, s, x, y, time.inc = 30, ...) {
     requireNamespace("rms")
     requireNamespace("survival")
     if (!is(y, "Surv") && is(y, "matrix") && ncol(y) == 2L)
@@ -73,7 +74,8 @@ as.cph.coxnet <- function(object, s, x, y, ...) {
     eta <- do.call(predict, args)
     coxphargs <- list(
         formula = "y ~ X1", data = data.frame(y, eta),
-        init = 1, iter = 0, x = TRUE, y = TRUE, surv = TRUE
+        init = 1, iter = 0, x = TRUE, y = TRUE, surv = TRUE,
+        time.inc = time.inc
     )
     if ("strata" %in% names(attributes(y))) {
         coxphargs$data$strata <- attr(y, "strata")

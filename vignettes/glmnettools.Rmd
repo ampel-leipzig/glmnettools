@@ -86,11 +86,12 @@ provides some helper functions to convert between these objects.
 
 ```{r cph}
 library("rms")
-cx <- as.cph(rcvob, x = x, y = y, s = "lambda.1se")
+tm <- 2 * 365.2
+cx <- as.cph(rcvob, x = x, y = y, s = "lambda.1se", time.inc = tm)
 
 set.seed(123)
 ## B should be much higher in real life
-cb <- calibrate(cx, B = 10, u = 2 * 365.25)
+cb <- calibrate(cx, B = 10, u = tm)
 cb
 plot(cb)
 ```

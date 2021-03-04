@@ -19,7 +19,7 @@ as.cph(object, ...)
 
 \method{as.cph}{rcv.glmnet}(object, s, x, y, ...)
 
-\method{as.cph}{coxnet}(object, s, x, y, ...)
+\method{as.cph}{coxnet}(object, s, x, y, time.inc = 30, ...)
 }
 \arguments{
 \item{object}{object that should be converted.}
@@ -32,6 +32,8 @@ as.cph(object, ...)
 \item{x}{\code{matrix}, as in \code{glmnet}.}
 
 \item{y}{response as in \code{glmnet}.}
+
+\item{time.inc}{\code{numeric(1)}, time increment, see \code{\link[rms:cph]{rms::cph()}} for details.}
 }
 \description{
 These functions convert \code{coxnet} objects into popular survival objects like
